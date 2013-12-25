@@ -1,0 +1,29 @@
+h1 Listing races
+
+table
+  tr
+    th Label
+    th Url
+    th Crawler
+    th Distance
+    th Starts at
+    th Ends at
+    th
+    th
+    th
+
+  - @races.each do |race|
+    tr
+      td = race.label
+      td = race.url
+      td = race.crawler
+      td = race.distance
+      td = race.starts_at
+      td = race.ends_at
+      td = link_to 'Show', race
+      td = link_to 'Edit', edit_race_path(race)
+      td = link_to 'Destroy', race, data: {:confirm => 'Are you sure?'}, :method => :delete
+
+br
+
+= link_to 'New Race', new_race_path

@@ -1,0 +1,24 @@
+p#notice = notice
+
+p
+  strong Label:
+  = @race.label
+p
+  strong Url:
+  = @race.url
+p
+  strong Crawler:
+  = @race.crawler
+p
+  strong Distance:
+  = @race.distance
+p
+  strong Starts at:
+  = @race.starts_at
+p
+  strong Ends at:
+  = @race.ends_at
+
+= link_to 'Edit', edit_race_path(@race)
+'|
+= link_to 'Back', races_path

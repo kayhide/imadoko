@@ -1,0 +1,15 @@
+p#notice = notice
+
+p
+  strong Race:
+  = @entry.race
+p
+  strong Number:
+  = @entry.number
+p
+  strong Status:
+  = @entry.status
+
+= link_to 'Edit', edit_entry_path(@entry)
+'|
+= link_to 'Back', entries_path

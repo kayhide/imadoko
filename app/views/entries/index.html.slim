@@ -1,0 +1,23 @@
+h1 Listing entries
+
+table
+  tr
+    th Race
+    th Number
+    th Status
+    th
+    th
+    th
+
+  - @entries.each do |entry|
+    tr
+      td = entry.race
+      td = entry.number
+      td = entry.status
+      td = link_to 'Show', entry
+      td = link_to 'Edit', edit_entry_path(entry)
+      td = link_to 'Destroy', entry, data: {:confirm => 'Are you sure?'}, :method => :delete
+
+br
+
+= link_to 'New Entry', new_entry_path
