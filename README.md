@@ -35,4 +35,18 @@
 ## ビュー ##
 `bootstrap` + `slim` を使ってみる。
 
+## モデル ##
 
+### クローラー ###
+`app/models/crawler` に作る。
+
+新しいクローラーを作るには、`Crawler::Base` を継承し、`#crawl` を実装する。
+```ruby
+module Crawler
+  class Tokyo << Base
+    def crawl
+      # do something
+    end
+  end
+end
+```
