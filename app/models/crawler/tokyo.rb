@@ -1,55 +1,53 @@
+# -*- coding: utf-8 -*-
 module Crawler
-  class Tokyo << Base
-    def crawl bib_number
-      uri = "http://p.tokyo42195.org/numberfile/#{bib_number}.html"
-      open(uri) do |data|
+  class Tokyo < Base
+    def url
+      "http://p.tokyo42195.org/numberfile/#{@entry.number}.html"
+    end
+
+    def crawl
+    end
+
+    def fetch
+      doc = nil
+      open(self.url) do |data|
         doc = Nokogiri::HTML(data)
-        dd = []
-        doc.css('#frame').each do |item|
-          item.css("dd").each {|t| dd << t.text}
-        end
+      end
 
-        # index  |         <dt>           |       <dd>
-        # -------+------------------------+-----------------
-        #   0    |   ナンバー(Bib number) |  99999999
-        #   1    |   氏名(Name)           |  苗字&nbsp;名前
-        #   2    |   種目(Category)       |  マラソン男子
+      # index  |         <dt>           |       <dd>
+      # -------+------------------------+-----------------
+      #   0    |   ナンバー(Bib number) |  99999999
+      #   1    |   氏名(Name)           |  苗字&nbsp;名前
+      #   2    |   種目(Category)       |  マラソン男子
 
-        #
-        # ゼッケンナンバーをチェックし、
-        # 想定した人でなければエラーとする
-        if dd[0] != bib_number
-          printf "ERROR!!!! :<%s>!=<%s>\n", dd[0], bib_number
-          return nil
-        end
+      unless doc.css('#frame dd').map(&:text).first == @entry.number
+        raise 'bib number mismatched.'
+      end
 
-        # th[1]        th[2]                      th[3]     th[4]
-        #----------------------------------------------------------
-        # 地点名  スプリット （ネットタイム）   ラップ    通過時間
-        # Point     Split    （Net Time）         Lap       Time
+      # th[1]        th[2]                      th[3]     th[4]
+      #----------------------------------------------------------
+      # 地点名  スプリット （ネットタイム）   ラップ    通過時間
+      # Point     Split    （Net Time）         Lap       Time
 
-        # td[1]        td[2]                      td[3]     td[4]
-        #----------------------------------------------------------
-        # 5km     00:20:40　(0:20:20)           0:20:20   09:30:40
-        # 10km    00:41:10　(0:40:50)           0:20:30   09:51:10
-        # 15km    01:01:49　(1:01:29)           0:20:39   10:11:49
-        # 20km    01:22:40　(1:22:20)           0:20:51   10:32:40
-        # 25km    01:43:13　(1:42:53)           0:20:33   10:53:13
-        # 30km    02:03:59　(2:03:39)           0:20:46   11:13:59
-        # 35km    02:24:58　(2:24:38)           0:20:59   11:34:58
-        # 40km    02:46:42　(2:46:22)           0:21:44   11:56:42
-        # Finish  02:56:21　(2:56:01)           0:09:39   12:06:21
+      # td[1]        td[2]                      td[3]     td[4]
+      #----------------------------------------------------------
+      # 5km     00:20:40　(0:20:20)           0:20:20   09:30:40
+      # 10km    00:41:10　(0:40:50)           0:20:30   09:51:10
+      # 15km    01:01:49　(1:01:29)           0:20:39   10:11:49
+      # 20km    01:22:40　(1:22:20)           0:20:51   10:32:40
+      # 25km    01:43:13　(1:42:53)           0:20:33   10:53:13
+      # 30km    02:03:59　(2:03:39)           0:20:46   11:13:59
+      # 35km    02:24:58　(2:24:38)           0:20:59   11:34:58
+      # 40km    02:46:42　(2:46:22)           0:21:44   11:56:42
+      # Finish  02:56:21　(2:56:01)           0:09:39   12:06:21
 
-        doc.search("//table[@class='sarchList']//tr[position()>1]").each do |tr|
-          hash = {}
-          hash[:point] = tr.search("td[1]").text  #=> 5km
-          hash[:split] = tr.search("td[2]").text  #=> 00:20:40　(0:20:20)
-          hash[:lap  ] = tr.search("td[3]").text  #=> 0:20:20
-          hash[:time ] = tr.search("td[4]").text  #=> 09:30:40
-        end
-
-        # 保存
-        # hogehoge
+      doc.search("//table[@class='sarchList']//tr[position()>1]").map do |tr|
+        {
+          point: tr.search("td[1]").text,  #=> 5km
+          split: tr.search("td[2]").text,  #=> 00:20:40　(0:20:20)
+          lap:   tr.search("td[3]").text,  #=> 0:20:20
+          time:  tr.search("td[4]").text,  #=> 09:30:40
+        }
       end
     end
 
@@ -86,8 +84,6 @@ module Crawler
 
       # 保存
       # hogehoge
-    end
-  end
     end
   end
 end
