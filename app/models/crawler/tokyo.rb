@@ -2,6 +2,7 @@ module Crawler
   class Tokyo << Base
     def crawl bib_number
       uri = "http://p.tokyo42195.org/numberfile/#{bib_number}.html"
+      data = []
       open(uri) do |data|
         doc = Nokogiri::HTML(data)
         dd = []
@@ -46,11 +47,12 @@ module Crawler
           hash[:split] = tr.search("td[2]").text  #=> 00:20:40　(0:20:20)
           hash[:lap  ] = tr.search("td[3]").text  #=> 0:20:20
           hash[:time ] = tr.search("td[4]").text  #=> 09:30:40
-        end
 
-        # 保存
-        # hogehoge
+          calc_expectancy hash
+          data << hash
+        end
       end
+      data
     end
 
     # 現在位置、ゴール時刻を予測する
@@ -60,7 +62,7 @@ module Crawler
 
       reg = Regexp.new("[0-9]*km", Regexp::IGNORECASE)
 
-      if reg.match hash[:point]
+      if reg.match(hash[:point]) && hash[:point].to_i % 5 == 0
 
         progress_sec = now_time.to_i - passed_time.to_i # 最終地点を通過してからの経過時間
         lap_time = Time.parse(hash[:lap])                                  # ラップタイム
@@ -84,10 +86,6 @@ module Crawler
         hash[:net_expectancy  ] = nil
       end
 
-      # 保存
-      # hogehoge
-    end
-  end
     end
   end
 end
