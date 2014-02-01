@@ -18,5 +18,6 @@ RSpec.configure do |config|
 
   config.before do
     FactoryGirl.reload
+    Delayed::Worker.delay_jobs = false
   end
 end
