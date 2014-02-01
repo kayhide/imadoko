@@ -13,5 +13,7 @@ class Entry < ActiveRecord::Base
   end
 
   def crawl
+    crawler = self.race.create_crawler(self)
+    crawler.crawl
   end
 end

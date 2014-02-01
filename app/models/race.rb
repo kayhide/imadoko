@@ -9,4 +9,10 @@ class Race < ActiveRecord::Base
     FULL_MARATHON = 42.195
     HALF_MARATHON = FULL_MARATHON / 2
   end
+
+  def create_crawler entry
+    self.crawler.constantize.new.tap do |crawler|
+      crawler.entry = entry
+    end
+  end
 end
