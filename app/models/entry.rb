@@ -7,4 +7,11 @@ class Entry < ActiveRecord::Base
   validates_presence_of :race_id
   validates_presence_of :number
   validates_inclusion_of :status, in: STATUSES
+
+  scope :running, -> do
+    where(status: 'running')
+  end
+
+  def crawl
+  end
 end

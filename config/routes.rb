@@ -3,4 +3,8 @@ Imadoko::Application.routes.draw do
 
   resources :races
   resources :entries
+
+  namespace :cron do
+    get :crawl
+  end
 end
